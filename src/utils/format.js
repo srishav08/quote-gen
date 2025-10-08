@@ -1,0 +1,2 @@
+export const INR = (n) => (isFinite(n) ? new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(n||0) : '-')
+export const nnum = (v) => (v === '' || v === null || v === undefined ? 0 : Number(v))
