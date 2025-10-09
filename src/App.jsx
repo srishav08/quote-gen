@@ -1,5 +1,5 @@
 // File: src/App.jsx
-import { NavLink, Route, Routes } from 'react-router-dom'
+import { BrowserRouter as Router, NavLink, Route, Routes } from 'react-router-dom'
 import QuoteBuilder from './pages/QuoteBuilder'
 import SettingsPage from './pages/SettingsPage'
 import PreviewPage from './pages/PreviewPage'
@@ -22,12 +22,14 @@ export default function App(){
         </div>
       </header>
       <div className="container" style={{padding:'16px'}}>
+        <Router basename="/quote-gen/">
         <Routes>
           <Route path="/" element={<QuoteBuilder/>} />
           <Route path="/quote" element={<QuoteBuilder/>} />
           <Route path="/settings" element={<SettingsPage/>} />
           <Route path="/preview" element={<PreviewPage/>} />
         </Routes>
+        </Router>
       </div>
     </>
   )
