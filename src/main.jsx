@@ -7,7 +7,7 @@ import { QuoteProvider } from './state/QuoteContext'
 
 createRoot(document.getElementById('root')).render(
 <React.StrictMode>
-<BrowserRouter>
+<BrowserRouter basename="/quote-gen/">
 <QuoteProvider>
 <App />
 </QuoteProvider>
