@@ -9,10 +9,10 @@ const __dirname = path.dirname(__filename)
 export default defineConfig({
   plugins: [react()],
   base: '/quote-gen/', // 👈 VERY IMPORTANT!
-//   resolve: {
-//     alias: {
-//       '@': path.resolve(__dirname, 'src'),
-//       events: 'events'
-//     },
-//   },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+      events: 'events'
+    },
+  },
 })
