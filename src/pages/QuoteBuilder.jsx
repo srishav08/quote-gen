@@ -2,6 +2,8 @@
 import React from 'react'
 import { useQuote } from '../state/QuoteContext'
 import { INR } from '../utils/format'
+import TwoDimensionalInput from '../components/twoDimensionalInput/TwoDimensionalnput'
+import SectionDivider from '../components/divider/sectionDivider/SectionDivider'
 
 export default function QuoteBuilder(){
   const q = useQuote()
@@ -14,7 +16,7 @@ export default function QuoteBuilder(){
     : []
 
   return (
-    <div className="row">
+    <div className="column">
       {/* Client & Quote */}
       <div className="card"><div className="body">
         <h3>Client & Quote</h3>
@@ -31,11 +33,95 @@ export default function QuoteBuilder(){
         <h3>Kitchen</h3>
         <div className="grid g3" style={{marginTop:8}}>
           <Field label="Name" value={q.kitchen.name} onChange={v=>q.setKitchen({...q.kitchen, name:v})}/>
-          <Field label="Core Material" value={q.kitchen.core} onChange={v=>q.setKitchen({...q.kitchen, core:v})}/>
-          <Field label="Inner Liner" value={q.kitchen.innerLiner} onChange={v=>q.setKitchen({...q.kitchen, innerLiner:v})}/>
+          <Select
+            label="Core Material"
+            value={q.kitchen.core || "--select--"}
+            onChange={v=>q.setKitchen({...q.kitchen, core:v})}
+            options={q.coreMaterialCatalog}
+          />
+          {/* <Field label="Core Material" value={q.kitchen.core} onChange={v=>q.setKitchen({...q.kitchen, core:v})}/> */}
+
+          <Select
+            label="Inner Liner"
+            value={q.kitchen.innerLiner || "--select--"}
+            onChange={v=>q.setKitchen({...q.kitchen, innerLiner:v})}
+            options={q.innerLinerCatalog}
+          />
+          {/* <Field label="Inner Liner" value={q.kitchen.innerLiner} onChange={v=>q.setKitchen({...q.kitchen, innerLiner:v})}/> */}
+          <Select
+            label="External Laminate"
+            value={q.kitchen.externalLaminate || "--select--"}
+            onChange={v=>q.setKitchen({...q.kitchen, externalLaminate:v})}
+            options={q.externalLaminateCatalog}
+          />
         </div>
         <div className="grid g3" style={{marginTop:8}}>
-          <NumberField label="Kitchen Face Area (sq ft)" value={q.areas.face} onChange={v=>{console.log(v);q.setAreas({...q.areas, face:v})}}/>
+          <NumberField label="Kitchen Face Area (sq ft)" value={q.areas.face} onChange={v=>{
+            console.log(v);
+            q.setAreas({...q.areas, face:v});
+            if(q.installationYes==="Yes") {
+              q.setInstallationAmount(150*globalThis.Number(v))
+            }
+          }}/>
+          <NumberField label="Exposed/Visible Area (sq ft)" value={q.areas.visible} onChange={v=>{console.log(v);q.setAreas({...q.areas, visible:v})}}/>
+          <NumberField label="Wall Unit Area (sq ft)" value={q.areas.wall} onChange={v=>{console.log(v);q.setAreas({...q.areas, wall:v})}}/>
+          <NumberField label="Base Unit Area (sq ft)" value={q.areas.base} onChange={v=>{console.log(v);q.setAreas({...q.areas, base:v})}}/>
+          <NumberField label="Tall Unit Area (sq ft)" value={q.areas.tall} onChange={v=>{console.log(v);q.setAreas({...q.areas, tall:v})}}/>
+        </div>
+        <div className="grid g2" style={{marginTop:8}}>
+          <TwoDimensionalInput
+            areaLabel="Shelf Area"
+            d1Val={q.shelvesArea.shelfWidth}
+            d2Val={q.shelvesArea.shelfDepth}
+            area={q.shelvesArea.shelfAreaEach}
+            onD1Change={(s)=>{
+              const shelfWidth = (s === '' ? 0 : globalThis.Number(s));
+              const w = shelfWidth === '' ? 0 : shelfWidth;
+              const d = q.shelvesArea.shelfDepth === '' ? 0 : q.shelvesArea.shelfDepth;
+              q.setShelvesArea({
+                ...q.shelvesArea,
+                shelfWidth,
+                shelfAreaEach: (w * d) / 144, // inches->sq ft
+              });
+            }}
+            onD2Change={(s)=>{
+              const shelfDepth = (s === '' ? 0 : globalThis.Number(s));
+              const d = shelfDepth === 0 ? 0 : shelfDepth;
+              const w = q.shelvesArea.shelfWidth === '' ? 0 : q.shelvesArea.shelfWidth;
+              q.setShelvesArea({
+                ...q.shelvesArea,
+                shelfDepth,
+                shelfAreaEach: (w * d) / 144, // inches->sq ft
+              });
+            }}
+          />
+
+          <TwoDimensionalInput
+            areaLabel="Tandem Bottoms Area"
+            d1Val={q.tandemBottomsArea.tandemWidth}
+            d2Val={q.tandemBottomsArea.tandemDepth}
+            area={q.tandemBottomsArea.tandemAreaEach}
+            onD1Change={(s)=>{
+              const tandemWidth = (s === '' ? 0 : globalThis.Number(s));
+              const w = tandemWidth === '' ? 0 : tandemWidth;
+              const d = q.tandemBottomsArea.tandemDepth === '' ? 0 : q.tandemBottomsArea.tandemDepth;
+              q.setTandemBottomsArea({
+                ...q.tandemBottomsArea,
+                tandemWidth,
+                tandemAreaEach: (w * d) / 144, // inches->sq ft
+              });
+            }}
+            onD2Change={(s)=>{
+              const tandemDepth = (s === '' ? 0 : globalThis.Number(s));
+              const d = tandemDepth === 0 ? 0 : tandemDepth;
+              const w = q.tandemBottomsArea.tandemWidth === '' ? 0 : q.tandemBottomsArea.tandemWidth;
+              q.setTandemBottomsArea({
+                ...q.tandemBottomsArea,
+                tandemDepth,
+                tandemAreaEach: (w * d) / 144, // inches->sq ft
+              });
+            }}
+          />
         </div>
       </div></div>
 
@@ -93,9 +179,11 @@ export default function QuoteBuilder(){
       </div></div>
 
       {/* Hardware & Accessories: Brand → Category → Item */}
-      <div className="card"><div className="body">
+      <div className="card"><div className="body" style={{marginTop:8}}>
         <h3>Hardware & Accessories</h3>
+        <SectionDivider text="Hardware" dashed />
         <LinesEditor title="Hardware"   lines={q.hardwareLines}   setLines={q.setHardwareLines}   catalog={q.hardwareCatalog}/>
+        <SectionDivider text="Accessories" dashed />
         <LinesEditor title="Accessories" lines={q.accessoryLines} setLines={q.setAccessoryLines} catalog={q.accessoryCatalog}/>
       </div></div>
 
@@ -103,8 +191,15 @@ export default function QuoteBuilder(){
       <div className="card"><div className="body">
         <h3>Options</h3>
         <div className="grid g3" style={{marginTop:8}}>
-          <Select label="Installation" value={q.installationYes} onChange={v=>q.setInstallationYes(v)} options={['Yes','No']}/>
-          <NumberField label="Installation Amount (flat)" value={q.installationAmount} onChange={q.setInstallationAmount}/>
+          <Select label="Installation" value={q.installationYes} onChange={v=>{
+            q.setInstallationYes(v);
+            if(v==="Yes") {
+              q.setInstallationAmount(150*globalThis.Number(q.areas.face));
+            } else {
+              q.setInstallationAmount(0);
+            }
+          }} options={['Yes','No']}/>
+          <NumberField disabled={true} label="Installation Amount" value={q.installationAmount} onChange={q.setInstallationAmount}/>
           <NumberField label="Transport & Loading (flat)" value={q.transportValue} onChange={q.setTransportValue}/>
         </div>
       </div></div>
@@ -140,10 +235,9 @@ function LinesEditor({ title, lines, setLines, catalog }){
 
   return (
     <div style={{marginTop:8}}>
-      <div style={{display:'flex',alignItems:'center',gap:8, margin:'8px 0'}}>
+      {/* <div style={{display:'flex',alignItems:'center',gap:8, margin:'8px 0'}}>
         <span className="pill">{title}</span>
-        <button className="btn" onClick={add}>Add</button>
-      </div>
+      </div> */}
 
       {lines.map((r,idx) => {
         const categories = r.brand ? Object.keys((catalog?.map?.[r.brand]) || {}) : []
@@ -152,7 +246,7 @@ function LinesEditor({ title, lines, setLines, catalog }){
           : []
 
         return (
-          <div key={r.id} className="grid g3" style={{alignItems:'end'}}>
+          <div key={r.id} className="grid g3" style={{marginTop:20, alignItems:'end'}}>
             <div>
               <label>Brand</label>
               <select value={r.brand} onChange={e=>change(idx,'brand', e.target.value)}>
@@ -184,6 +278,9 @@ function LinesEditor({ title, lines, setLines, catalog }){
           </div>
         )
       })}
+      <div style={{display:'flex',alignItems:'center',gap:8, margin:'8px 0'}}>
+        <button className="btn" onClick={add}>Add</button>
+      </div>
     </div>
   )
 }
@@ -196,7 +293,7 @@ function Field({ label, value, onChange, full }){
     </div>
   )
 }
-function NumberField({ label, value, onChange }){
+function NumberField({ label, value, onChange, disabled=false }){
     const handleChange = (e) => {
         const s = e.target.value;
         // allow blank while typing; coerce only when not blank
@@ -206,7 +303,7 @@ function NumberField({ label, value, onChange }){
   return (
     <div>
       <label>{label}</label>
-      <input type="number" value={value} onChange={e=>onChange(e.target.value === ''?0:Number(e.target.value))} />
+      <input disabled={disabled} type="number" value={value} onChange={e=>onChange(e.target.value === ''?0:Number(e.target.value))} />
     </div>
   )
 }

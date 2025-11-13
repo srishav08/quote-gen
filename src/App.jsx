@@ -16,7 +16,7 @@ export default function App(){
           </div>
           <nav style={{marginLeft:'auto', display:'flex', gap:12}}>
             <NavLink className="btn" to="/quote">Quote</NavLink>
-            <NavLink className="btn" to="/settings">Settings</NavLink>
+            {/* <NavLink className="btn" to="/settings">Settings</NavLink> */}
             <NavLink className="btn primary" to="/preview">Preview / PDF</NavLink>
           </nav>
         </div>

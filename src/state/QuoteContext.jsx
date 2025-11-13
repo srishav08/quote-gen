@@ -1,7 +1,8 @@
 // File: src/state/QuoteContext.jsx
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { INR, nnum } from '../utils/format'
-import { loadAllFromGoogle } from '../hooks/useInventory'
+import { loadAllFromGoogle } from '../hooks/useInventory';
+import { innerLinerCatalog, externalLaminateCatalog, coreMaterialCatalog } from '../config/inventory/inventoryConstants';
 
 const QuoteContext = createContext(null)
 export const useQuote = () => useContext(QuoteContext)
@@ -42,8 +43,10 @@ Branch: MG Road, Bengaluru`,
   const [quoteMeta, setQuoteMeta] = useState({ quoteNo: `TAR-${Date.now().toString().slice(-6)}`, date: new Date().toISOString().slice(0,10) })
 
   // Kitchen & areas
-  const [kitchen, setKitchen] = useState({ name:'Kitchen', core:'BWR', innerLiner:'White' })
-  const [areas, setAreas]   = useState({ face:0 }) // Face area drives Laminates & Boards
+  const [kitchen, setKitchen] = useState({ name:'Kitchen', core:'BWR', innerLiner:'White', externalLaminate: '0.8mm' })
+  const [areas, setAreas]   = useState({ face:0, visible:0, wall:0, base:0, tall:0 }) // Face area drives Laminates & Boards
+  const [shelvesArea, setShelvesArea] = useState({ shelfAreaEach:0, shelfWidth:0, shelfDepth:0 });
+  const [tandemBottomsArea, setTandemBottomsArea] = useState({ tandemAreaEach:0, tandemWidth:0, tandemDepth:0 });
 
   // Options
   const [installationYes, setInstallationYes] = useState('No')
@@ -101,6 +104,11 @@ Branch: MG Road, Bengaluru`,
     quoteMeta, setQuoteMeta,
     kitchen, setKitchen,
     areas, setAreas,
+    shelvesArea, setShelvesArea,
+    tandemBottomsArea, setTandemBottomsArea,
+
+    //catlog constants
+    innerLinerCatalog, externalLaminateCatalog, coreMaterialCatalog,
 
     // Options
     installationYes, setInstallationYes,
