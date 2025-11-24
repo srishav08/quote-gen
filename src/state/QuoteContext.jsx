@@ -39,12 +39,14 @@ Branch: MG Road, Bengaluru`,
   })
 
   // Client / Quote meta
+  const [selectedProduct, setSelectedProduct] = useState("");
+  const productCatlog = ['kitchen', 'wardrobe'];
   const [client, setClient] = useState({ name:'', address:'' })
   const [quoteMeta, setQuoteMeta] = useState({ quoteNo: `TAR-${Date.now().toString().slice(-6)}`, date: new Date().toISOString().slice(0,10) })
 
   // Kitchen & areas
-  const [kitchen, setKitchen] = useState({ name:'Kitchen', core:'BWR', innerLiner:'White', externalLaminate: '0.8mm' })
-  const [areas, setAreas]   = useState({ face:0, visible:0, wall:0, base:0, tall:0 }) // Face area drives Laminates & Boards
+  const [kitchen, setKitchen] = useState({ name:'', core:'', innerLiner:'', externalLaminate: '' })
+  const [areas, setAreas]   = useState({ face:'', visible:'', wall:'', base:'', loft:'', tandem:'', shelf:'' }) // Face area drives Laminates & Boards
   const [shelvesArea, setShelvesArea] = useState({ shelfAreaEach:0, shelfWidth:0, shelfDepth:0 });
   const [tandemBottomsArea, setTandemBottomsArea] = useState({ tandemAreaEach:0, tandemWidth:0, tandemDepth:0 });
 
@@ -99,6 +101,9 @@ Branch: MG Road, Bengaluru`,
   const grandTotal = laminateTotal + boardsTotal + hardwareTotal + accessoriesTotal + nnum(transportValue) + installTotal
 
   const value = {
+    selectedProduct,
+    setSelectedProduct,
+    productCatlog,
     company,
     client, setClient,
     quoteMeta, setQuoteMeta,

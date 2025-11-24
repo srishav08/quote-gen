@@ -5,6 +5,8 @@ import { INR } from '../utils/format'
 import TwoDimensionalInput from '../components/twoDimensionalInput/TwoDimensionalnput'
 import SectionDivider from '../components/divider/sectionDivider/SectionDivider'
 
+import RadioYesNo from '../components/radio/Index'
+
 export default function QuoteBuilder(){
   const q = useQuote()
   console.log(q)
@@ -16,7 +18,8 @@ export default function QuoteBuilder(){
     : []
 
   return (
-    <div className="column">
+    <div className="row">
+      <div className="stack-16">
       {/* Client & Quote */}
       <div className="card"><div className="body">
         <h3>Client & Quote</h3>
@@ -24,12 +27,18 @@ export default function QuoteBuilder(){
           <Field label="Client Name" value={q.client.name} onChange={v=>q.setClient({...q.client, name:v})}/>
           <Field label="Quote No" value={q.quoteMeta.quoteNo} onChange={v=>q.setQuoteMeta({...q.quoteMeta, quoteNo:v})}/>
           <Field label="Date (YYYY-MM-DD)" value={q.quoteMeta.date} onChange={v=>q.setQuoteMeta({...q.quoteMeta, date:v})}/>
-          <Field label="Client Address" value={q.client.address} onChange={v=>q.setClient({...q.client, address:v})} full />
+          <Select
+            label="Product"
+            value={q.selectedProduct}
+            onChange={v=>q.setSelectedProduct(v)}
+            options={q.productCatlog}
+          />
+          <Field label="Site Address" value={q.client.address} onChange={v=>q.setClient({...q.client, address:v})} full />
         </div>
       </div></div>
 
       {/* Kitchen Basics */}
-      <div className="card"><div className="body">
+      {/* <div className="card"><div className="body">
         <h3>Kitchen</h3>
         <div className="grid g3" style={{marginTop:8}}>
           <Field label="Name" value={q.kitchen.name} onChange={v=>q.setKitchen({...q.kitchen, name:v})}/>
@@ -39,7 +48,6 @@ export default function QuoteBuilder(){
             onChange={v=>q.setKitchen({...q.kitchen, core:v})}
             options={q.coreMaterialCatalog}
           />
-          {/* <Field label="Core Material" value={q.kitchen.core} onChange={v=>q.setKitchen({...q.kitchen, core:v})}/> */}
 
           <Select
             label="Inner Liner"
@@ -47,7 +55,6 @@ export default function QuoteBuilder(){
             onChange={v=>q.setKitchen({...q.kitchen, innerLiner:v})}
             options={q.innerLinerCatalog}
           />
-          {/* <Field label="Inner Liner" value={q.kitchen.innerLiner} onChange={v=>q.setKitchen({...q.kitchen, innerLiner:v})}/> */}
           <Select
             label="External Laminate"
             value={q.kitchen.externalLaminate || "--select--"}
@@ -123,10 +130,51 @@ export default function QuoteBuilder(){
             }}
           />
         </div>
+      </div></div> */}
+
+      {/* Dimensions */}
+      <div className="card"><div className="body">
+      <h3>Dimensions</h3>
+      <div className="grid g2" style={{marginTop:8}}>
+          <NumberField label="Exposed/Visible Area (sq ft)" value={q.areas.visible} onChange={v=>{console.log(v);q.setAreas({...q.areas, visible:v})}}/>
+          <NumberField label="Base Unit Area (sq ft)" value={q.areas.base} onChange={v=>{console.log(v);q.setAreas({...q.areas, base:v})}}/>
+          <NumberField label="Wall Unit Area (sq ft)" value={q.areas.wall} onChange={v=>{console.log(v);q.setAreas({...q.areas, wall:v})}}/>
+          <NumberField label="Loft Area (sq ft)" value={q.areas.loft} onChange={v=>{console.log(v);q.setAreas({...q.areas, loft:v})}}/>
+          <NumberField label="Shelf Area (sq ft)" value={q.areas.shelf} onChange={v=>{console.log(v);q.setAreas({...q.areas, shelf:v})}}/>
+          <NumberField label="Tandem Bottoms Area (sq ft)" value={q.areas.tandem} onChange={v=>{console.log(v);q.setAreas({...q.areas, tandem:v})}}/>
+        </div>
+      </div></div>
+
+      {/* kitchen basic info */}
+      <div className="card"><div className="body">
+      <h3>Kitchen</h3>
+      <div className="grid g3" style={{marginTop:8}}>
+          <Select
+            label="Core Material"
+            value={q.kitchen.core || "--select--"}
+            onChange={v=>q.setKitchen({...q.kitchen, core:v})}
+            options={q.coreMaterialCatalog}
+          />
+          {/* <Field label="Core Material" value={q.kitchen.core} onChange={v=>q.setKitchen({...q.kitchen, core:v})}/> */}
+
+          <Select
+            label="Inner Liner"
+            value={q.kitchen.innerLiner || "--select--"}
+            onChange={v=>q.setKitchen({...q.kitchen, innerLiner:v})}
+            options={q.innerLinerCatalog}
+          />
+          {/* <Field label="Inner Liner" value={q.kitchen.innerLiner} onChange={v=>q.setKitchen({...q.kitchen, innerLiner:v})}/> */}
+          <Select
+            label="Laminate Finish"
+            value={q.kitchen.externalLaminate || "--select--"}
+            onChange={v=>q.setKitchen({...q.kitchen, externalLaminate:v})}
+            options={q.externalLaminateCatalog}
+          />
+        </div>
       </div></div>
 
       {/* Laminates */}
-      <div className="card"><div className="body">
+      {/* <div className="card"><div className="body">
         <h3>Laminates</h3>
         <div className="grid g3" style={{marginTop:8}}>
           <Select
@@ -144,10 +192,10 @@ export default function QuoteBuilder(){
           <Readout label="Rate (hidden)" value={q.laminatePerSqft ? INR(q.laminatePerSqft) : '—'} />
         </div>
         <div className="muted" style={{marginTop:6}}>Calculated as: rate × Kitchen Face Area.</div>
-      </div></div>
+      </div></div> */}
 
       {/* Boards */}
-      <div className="card"><div className="body">
+      {/* <div className="card"><div className="body">
         <h3>Boards</h3>
         <div className="grid g3" style={{marginTop:8}}>
           <Select
@@ -176,7 +224,7 @@ export default function QuoteBuilder(){
           <Readout label="Computed" value={INR(q.boardsTotal)} />
         </div>
         <div className="muted" style={{marginTop:6}}>Calculated as: rate × Kitchen Face Area.</div>
-      </div></div>
+      </div></div> */}
 
       {/* Hardware & Accessories: Brand → Category → Item */}
       <div className="card"><div className="body" style={{marginTop:8}}>
@@ -191,7 +239,22 @@ export default function QuoteBuilder(){
       <div className="card"><div className="body">
         <h3>Options</h3>
         <div className="grid g3" style={{marginTop:8}}>
-          <Select label="Installation" value={q.installationYes} onChange={v=>{
+          <RadioYesNo
+            label="Installation"
+            name="installation"
+            value={q.installationYes}
+            onChange={q.setInstallationYes}
+          />
+          <RadioYesNo
+            label="Transport & Loading"
+            name="transport"
+            value={q.transportValue > 0 ? 'Yes' : 'No'}
+            onChange={(v) => {
+              if (v === 'No') q.setTransportValue(0);
+              // if 'Yes', keep current value (0) and let the user type; field below enables
+            }}
+          />
+          {/* <Select label="Installation" value={q.installationYes} onChange={v=>{
             q.setInstallationYes(v);
             if(v==="Yes") {
               q.setInstallationAmount(150*globalThis.Number(q.areas.face));
@@ -200,22 +263,28 @@ export default function QuoteBuilder(){
             }
           }} options={['Yes','No']}/>
           <NumberField disabled={true} label="Installation Amount" value={q.installationAmount} onChange={q.setInstallationAmount}/>
-          <NumberField label="Transport & Loading (flat)" value={q.transportValue} onChange={q.setTransportValue}/>
+          <NumberField label="Transport & Loading (flat)" value={q.transportValue} onChange={q.setTransportValue}/> */}
         </div>
       </div></div>
 
-      {/* Summary */}
-      <div className="card"><div className="body">
-        <h3>Price Summary</h3>
-        <div className="grid g3" style={{marginTop:8}}>
-          <SummaryTile label="Laminates + Boards" value={INR(q.laminateTotal + q.boardsTotal)}/>
-          <SummaryTile label="Hardware + Accessories" value={INR(q.hardwareTotal + q.accessoriesTotal)}/>
-          <SummaryTile label="Grand Total" value={INR(q.grandTotal)}/>
-        </div>
-      </div></div>
+      
 
       {/* Constant footer */}
       <StaticFooter />
+    </div>
+    {/* RIGHT: sticky Price Summary */}
+    <aside className="aside-sticky">
+      {/* Summary */}
+      <div className="card"><div className="body">
+        <h3>Price Summary</h3>
+        <div className="grid" style={{marginTop:8}}>
+          <SummaryTile label="All Units + Shutters + Shelves + Tandem" value={INR(q.laminateTotal + q.boardsTotal)}/>
+          <SummaryTile label="Hardware + Accessories" value={INR(q.hardwareTotal + q.accessoriesTotal)}/>
+          <SummaryTile label="Installation + Transport & Loading/Unloading" value={INR(q.hardwareTotal + q.accessoriesTotal)}/>
+          <SummaryTile label="Grand Total" value={INR(q.grandTotal)}/>
+        </div>
+      </div></div>
+    </aside>
     </div>
   )
 }
@@ -246,7 +315,7 @@ function LinesEditor({ title, lines, setLines, catalog }){
           : []
 
         return (
-          <div key={r.id} className="grid g3" style={{marginTop:20, alignItems:'end'}}>
+          <div key={r.id} className="grid g4" style={{marginTop:20, alignItems:'end'}}>
             <div>
               <label>Brand</label>
               <select value={r.brand} onChange={e=>change(idx,'brand', e.target.value)}>
@@ -254,13 +323,13 @@ function LinesEditor({ title, lines, setLines, catalog }){
                 {brandOptions.map(b => <option key={b} value={b}>{b}</option>)}
               </select>
             </div>
-            <div>
+            {/* <div>
               <label>Category</label>
               <select value={r.category} disabled={!r.brand} onChange={e=>change(idx,'category', e.target.value)}>
                 <option value="">{r.brand ? '-- select category --' : 'select brand first'}</option>
                 {categories.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
-            </div>
+            </div> */}
             <div>
               <label>Item</label>
               <select value={r.item} disabled={!r.category} onChange={e=>change(idx,'item', e.target.value)}>
@@ -279,7 +348,7 @@ function LinesEditor({ title, lines, setLines, catalog }){
         )
       })}
       <div style={{display:'flex',alignItems:'center',gap:8, margin:'8px 0'}}>
-        <button className="btn" onClick={add}>Add</button>
+        <button className="btn blue" onClick={add}>Add</button>
       </div>
     </div>
   )
@@ -303,7 +372,7 @@ function NumberField({ label, value, onChange, disabled=false }){
   return (
     <div>
       <label>{label}</label>
-      <input disabled={disabled} type="number" value={value} onChange={e=>onChange(e.target.value === ''?0:Number(e.target.value))} />
+      <input disabled={disabled} type="number" value={value} onChange={e=>onChange(e.target.value)} />
     </div>
   )
 }
@@ -312,7 +381,7 @@ function Select({ label, value, onChange, options, disabled }){
     <div>
       <label>{label}</label>
       <select disabled={disabled} value={value} onChange={e=>onChange(e.target.value)}>
-        <option value=""></option>
+        <option value="--select--"></option>
         {options.map(o => <option key={o} value={o}>{o}</option>)}
       </select>
     </div>

@@ -4,6 +4,7 @@ import QuoteBuilder from './pages/QuoteBuilder'
 import SettingsPage from './pages/SettingsPage'
 import PreviewPage from './pages/PreviewPage'
 import logoUrl from './assets/logo.svg'
+import QuoteLayoutsPreview from './pages/Preview'
 
 export default function App(){
   return (
@@ -27,6 +28,7 @@ export default function App(){
           <Route path="/quote" element={<QuoteBuilder/>} />
           <Route path="/settings" element={<SettingsPage/>} />
           <Route path="/preview" element={<PreviewPage/>} />
+          <Route path="/design" element={<QuoteLayoutsPreview/>}/>
         </Routes>
       </div>
     </>
