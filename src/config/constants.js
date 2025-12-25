@@ -1,7 +1,7 @@
 export const COMPANY = {
-  name: 'Tarush Kitchens',
-  email: 'hello@tarushkitchens.com',
-  website: 'tarushkitchens.com',
+  name: 'Tarush Furnitures',
+  email: 'hello@tarushfurniture.com',
+  website: 'www.tarushfurniture.com',
   instagram: 'instagram.com/tarushkitchens',
   address: 'Bengaluru, Karnataka, India',
   gst: '',

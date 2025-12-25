@@ -24,14 +24,14 @@ const nestedPrice = (catalog, brand, category, item) => {
 export function QuoteProvider({ children }){
   // Company (constant footer)
   const [company] = useState({
-    name: 'Tarush Kitchens',
+    name: 'Tarush Furnitures',
     email: 'hello@tarushkitchens.com',
     website: 'tarushkitchens.com',
     instagram: 'instagram.com/tarushkitchens',
     address: 'Bengaluru, Karnataka, India',
     gst: '',
     bankDetails: `Bank: HDFC Bank
-A/C Name: Tarush Kitchens
+A/C Name: Tarush Furnitures
 A/C No: 1234567890
 IFSC: HDFC0000001
 Branch: MG Road, Bengaluru`,
@@ -46,14 +46,14 @@ Branch: MG Road, Bengaluru`,
 
   // Kitchen & areas
   const [kitchen, setKitchen] = useState({ name:'', core:'', innerLiner:'', externalLaminate: '' })
-  const [areas, setAreas]   = useState({ face:'', visible:'', wall:'', base:'', loft:'', tandem:'', shelf:'' }) // Face area drives Laminates & Boards
+  const [areas, setAreas]   = useState({ face:'', visible:'', wall:'', base:'', loft:'', tall:'', tandem:'', shelf:'' }) // Face area drives Laminates & Boards
   const [shelvesArea, setShelvesArea] = useState({ shelfAreaEach:0, shelfWidth:0, shelfDepth:0 });
   const [tandemBottomsArea, setTandemBottomsArea] = useState({ tandemAreaEach:0, tandemWidth:0, tandemDepth:0 });
 
   // Options
   const [installationYes, setInstallationYes] = useState('No')
   const [installationAmount, setInstallationAmount] = useState(0) // flat amount, used if Yes
-  const [transportValue, setTransportValue] = useState(0)         // flat
+  const [transportValue, setTransportValue] = useState()         // flat
 
   // Laminates catalog + selection
   const [laminatesCatalog, setLaminatesCatalog] = useState({ categories: [], map: {} })
@@ -68,6 +68,10 @@ Branch: MG Road, Bengaluru`,
   const [accessoryCatalog, setAccessoryCatalog] = useState({ brands: [], map: {} })
   const [hardwareLines, setHardwareLines]   = useState([{ id:1, brand:'', category:'', item:'', qty:0 }])
   const [accessoryLines, setAccessoryLines] = useState([{ id:1, brand:'', category:'', item:'', qty:0 }])
+
+  //cost
+  const [totalCost, setTotalCost] = useState(0);
+  const [moduleCost, setModuleCost] = useState({carcus:0, shutter:0,exposed:0,shelves:0,tandem:0,installation:0,transport:0,hw:0,accessories:0});
 
   // Load from your Google Sheet (hardcoded)
   useEffect(() => {
@@ -131,8 +135,8 @@ Branch: MG Road, Bengaluru`,
     accessoryLines, setAccessoryLines,
 
     // Totals
-    hardwareTotal, accessoriesTotal,
-    grandTotal,
+    totalCost, setTotalCost,
+    moduleCost, setModuleCost
   }
 
   return <QuoteContext.Provider value={value}>{children}</QuoteContext.Provider>

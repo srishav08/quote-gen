@@ -17,12 +17,28 @@ export default function QuoteBuilder(){
     ? Object.keys(q.boardsCatalog.map[q.boardSelection.category]?.[q.boardSelection.type] || {})
     : []
 
+  const evaluateTotalCost = () => {
+
+  }
+
+  const evaluateHardwareAccessoryCost = () => {
+
+  }
+
+  const evaluateInstallationCost = () => {
+
+  }
+
+  const evaluateModularCost = () => {
+    
+  }
+
   return (
     <div className="row">
       <div className="stack-16">
       {/* Client & Quote */}
       <div className="card"><div className="body">
-        <h3>Client & Quote</h3>
+        <h3>Client Details</h3>
         <div className="grid g2" style={{marginTop:8}}>
           <Field label="Client Name" value={q.client.name} onChange={v=>q.setClient({...q.client, name:v})}/>
           <Field label="Quote No" value={q.quoteMeta.quoteNo} onChange={v=>q.setQuoteMeta({...q.quoteMeta, quoteNo:v})}/>
@@ -132,22 +148,9 @@ export default function QuoteBuilder(){
         </div>
       </div></div> */}
 
-      {/* Dimensions */}
-      <div className="card"><div className="body">
-      <h3>Dimensions</h3>
-      <div className="grid g2" style={{marginTop:8}}>
-          <NumberField label="Exposed/Visible Area (sq ft)" value={q.areas.visible} onChange={v=>{console.log(v);q.setAreas({...q.areas, visible:v})}}/>
-          <NumberField label="Base Unit Area (sq ft)" value={q.areas.base} onChange={v=>{console.log(v);q.setAreas({...q.areas, base:v})}}/>
-          <NumberField label="Wall Unit Area (sq ft)" value={q.areas.wall} onChange={v=>{console.log(v);q.setAreas({...q.areas, wall:v})}}/>
-          <NumberField label="Loft Area (sq ft)" value={q.areas.loft} onChange={v=>{console.log(v);q.setAreas({...q.areas, loft:v})}}/>
-          <NumberField label="Shelf Area (sq ft)" value={q.areas.shelf} onChange={v=>{console.log(v);q.setAreas({...q.areas, shelf:v})}}/>
-          <NumberField label="Tandem Bottoms Area (sq ft)" value={q.areas.tandem} onChange={v=>{console.log(v);q.setAreas({...q.areas, tandem:v})}}/>
-        </div>
-      </div></div>
-
       {/* kitchen basic info */}
       <div className="card"><div className="body">
-      <h3>Kitchen</h3>
+      <h3>Material Selection</h3>
       <div className="grid g3" style={{marginTop:8}}>
           <Select
             label="Core Material"
@@ -165,13 +168,30 @@ export default function QuoteBuilder(){
           />
           {/* <Field label="Inner Liner" value={q.kitchen.innerLiner} onChange={v=>q.setKitchen({...q.kitchen, innerLiner:v})}/> */}
           <Select
-            label="Laminate Finish"
+            label="Shutter Finish"
             value={q.kitchen.externalLaminate || "--select--"}
             onChange={v=>q.setKitchen({...q.kitchen, externalLaminate:v})}
             options={q.externalLaminateCatalog}
           />
         </div>
       </div></div>
+
+      {/* Dimensions */}
+      <div className="card"><div className="body">
+      <h3>Dimensions</h3>
+      <div className="grid g2" style={{marginTop:8}}>
+          <NumberField label="Total Kitchen Face Area (sq ft)" value={q.areas.face} onChange={v=>{console.log(v);q.setAreas({...q.areas, face:v})}}/>
+          <NumberField label="Exposed/Visible Area (sq ft)" value={q.areas.visible} onChange={v=>{console.log(v);q.setAreas({...q.areas, visible:v})}}/>
+          <NumberField label="Tall Unit Area (sq ft)" value={q.areas.tall} onChange={v=>{console.log(v);q.setAreas({...q.areas, tall:v})}}/>
+          <NumberField label="Base Unit Area (sq ft)" value={q.areas.base} onChange={v=>{console.log(v);q.setAreas({...q.areas, base:v})}}/>
+          <NumberField label="Wall Unit Area (sq ft)" value={q.areas.wall} onChange={v=>{console.log(v);q.setAreas({...q.areas, wall:v})}}/>
+          <NumberField label="Loft Area (sq ft)" value={q.areas.loft} onChange={v=>{console.log(v);q.setAreas({...q.areas, loft:v})}}/>
+          <NumberField label="Shelf Area (sq ft)" value={q.areas.shelf} onChange={v=>{console.log(v);q.setAreas({...q.areas, shelf:v})}}/>
+          <NumberField label="Tandem Bottoms Area (sq ft)" value={q.areas.tandem} onChange={v=>{console.log(v);q.setAreas({...q.areas, tandem:v})}}/>
+        </div>
+      </div></div>
+
+      
 
       {/* Laminates */}
       {/* <div className="card"><div className="body">
@@ -239,13 +259,14 @@ export default function QuoteBuilder(){
       <div className="card"><div className="body">
         <h3>Options</h3>
         <div className="grid g3" style={{marginTop:8}}>
+          <NumberField label="Transport & Loading(₹)" value={q.transportValue} onChange={v=>{console.log(v);q.setTransportValue(v)}}/>
           <RadioYesNo
             label="Installation"
             name="installation"
             value={q.installationYes}
             onChange={q.setInstallationYes}
           />
-          <RadioYesNo
+          {/* <RadioYesNo
             label="Transport & Loading"
             name="transport"
             value={q.transportValue > 0 ? 'Yes' : 'No'}
@@ -253,7 +274,7 @@ export default function QuoteBuilder(){
               if (v === 'No') q.setTransportValue(0);
               // if 'Yes', keep current value (0) and let the user type; field below enables
             }}
-          />
+          /> */}
           {/* <Select label="Installation" value={q.installationYes} onChange={v=>{
             q.setInstallationYes(v);
             if(v==="Yes") {
@@ -411,12 +432,12 @@ function StaticFooter(){
         <div style={{fontWeight:600}}>{company.name}</div>
         <div className="muted" style={{display:'flex',gap:8,justifyContent:'center',flexWrap:'wrap'}}>
           <span>{company.email}</span><span>•</span>
-          <span>{company.website}</span><span>•</span>
-          <span>{company.instagram}</span>
+          <span>{company.website}</span>
+          {/* <span>{company.instagram}</span> */}
         </div>
-        <div className="muted" style={{whiteSpace:'pre-line', marginTop:6}}>
+        {/* <div className="muted" style={{whiteSpace:'pre-line', marginTop:6}}>
           {company.bankDetails}
-        </div>
+        </div> */}
       </div>
     </div>
   )
