@@ -3,11 +3,21 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from '
 import { INR, nnum } from '../utils/format'
 import { loadAllFromGoogle } from '../hooks/useInventory';
 import { innerLinerCatalog, externalLaminateCatalog, coreMaterialCatalog } from '../config/inventory/inventoryConstants';
+import { hardwareInventoryCatalog, accessoryInventoryCatalog, pricing } from './pricingSheet';
 
 const QuoteContext = createContext(null)
 export const useQuote = () => useContext(QuoteContext)
 
 // Helpers
+export const coreKey = (v) => String(v || '').toLowerCase(); // "BWR" -> "bwr"
+export const shutterKey = (v) => {
+  const s = String(v || '').toLowerCase();
+  if (s.includes('acrylic')) return 'acrylic';
+  if (s.includes('pvc'))     return 'pvc';
+  if (s.includes('1mm'))     return '1mm';
+  if (s.includes('0.8'))     return '0.8mm';
+  return s; // already "1mm" / "0.8mm" etc.
+};
 const laminateRate = (catalog, category, tier) => {
   const entry = catalog?.map?.[category]
   if (!entry) return 0
@@ -64,10 +74,10 @@ Branch: MG Road, Bengaluru`,
   const [boardSelection, setBoardSelection] = useState({ category:'', type:'', thickness:'' })
 
   // Hardware / Accessories catalogs & lines (Brand → Category → Item)
-  const [hardwareCatalog, setHardwareCatalog]   = useState({ brands: [], map: {} })
-  const [accessoryCatalog, setAccessoryCatalog] = useState({ brands: [], map: {} })
-  const [hardwareLines, setHardwareLines]   = useState([{ id:1, brand:'', category:'', item:'', qty:0 }])
-  const [accessoryLines, setAccessoryLines] = useState([{ id:1, brand:'', category:'', item:'', qty:0 }])
+  const [hardwareCatalog, setHardwareCatalog]   = useState({})
+  const [accessoryCatalog, setAccessoryCatalog] = useState({})
+  const [hardwareLines, setHardwareLines]   = useState([{ id:1, brand:'', item:'', qty:0, cost:0 }])
+  const [accessoryLines, setAccessoryLines] = useState([{ id:1, brand:'', item:'', qty:0, cost:0 }])
 
   //cost
   const [totalCost, setTotalCost] = useState(0);
@@ -75,14 +85,18 @@ Branch: MG Road, Bengaluru`,
 
   // Load from your Google Sheet (hardcoded)
   useEffect(() => {
-    const SHEET_ID = '1Iw51nEpyCpHpaHIxSVDhuFoT6RjMGLAyEf9jRM4nn1k'
-    loadAllFromGoogle(SHEET_ID, {
-      setLaminatesCatalog,
-      setBoardsCatalog,
-      setHardwareCatalog,
-      setAccessoryCatalog,
-    }).catch(() => {})
+    // const SHEET_ID = '1Iw51nEpyCpHpaHIxSVDhuFoT6RjMGLAyEf9jRM4nn1k'
+    // loadAllFromGoogle(SHEET_ID, {
+    //   setLaminatesCatalog,
+    //   setBoardsCatalog,
+    //   setHardwareCatalog,
+    //   setAccessoryCatalog,
+    // }).catch(() => {})
+    setHardwareCatalog(hardwareInventoryCatalog);
+    setAccessoryCatalog(accessoryInventoryCatalog);
   }, [])
+
+
 
   // Derived totals
   const laminatePerSqft = laminateRate(laminatesCatalog, laminateSelection.category, laminateSelection.tier)
@@ -103,6 +117,60 @@ Branch: MG Road, Bengaluru`,
   const installTotal = installationYes === 'Yes' ? nnum(installationAmount) : 0
 
   const grandTotal = laminateTotal + boardsTotal + hardwareTotal + accessoriesTotal + nnum(transportValue) + installTotal
+
+
+  //calculation
+  // ---- derive core + shutter costs from selections and areas ----
+  const n = (x) => (x === '' || x == null ? 0 : Number(x) || 0)
+  const coreRates = pricing.core[coreKey(kitchen.core)] || { base:0, tall:0, wall:0, shelf:0, tandem:0 };
+  const core_base   = React.useMemo(() => areas.base   * n(coreRates.base),   [areas.base,   coreRates.base])
+const core_tall   = React.useMemo(() => areas.tall   * n(coreRates.tall),   [areas.tall,   coreRates.tall])
+const core_wall   = React.useMemo(() => areas.wall   * n(coreRates.wall),   [areas.wall,   coreRates.wall])
+const core_shelf  = React.useMemo(() => areas.shelf  * n(coreRates.shelf),  [areas.shelf,  coreRates.shelf])
+const core_tandem = React.useMemo(() => areas.tandem * n(coreRates.tandem), [areas.tandem, coreRates.tandem])
+
+const carcusCost  = core_base + core_tall + core_wall
+const shelvesCost = core_shelf
+const tandemCost  = core_tandem
+const selectedCore    = coreKey(kitchen.core)
+const selectedShutter = shutterKey(kitchen.externalLaminate)
+const shutterPerSqft = pricing.shutter[selectedShutter] || 0
+const shutterCost = React.useMemo(() => areas.visible * n(shutterPerSqft), [areas.visible, shutterPerSqft])
+
+  // If you already compute hardware/accessory totals elsewhere, alias them:
+  const hwTotal  = nnum(moduleCost.hw);
+  const accTotal = nnum(moduleCost.accessories);
+
+  const installationCost = (installationYes === 'Yes' && Number.isFinite(areas.face)) ? n(pricing?.installation*areas.face) : 0
+const transportCost    = n(transportValue)
+
+  // keep moduleCost/totalCost in sync whenever inputs change
+  useEffect(() => {
+    const carcus = core_base + core_tall + core_wall;
+    const shelves = core_shelf;
+    const tandem  = core_tandem;
+    const shutter = shutterCost;
+    const exposed = shutterCost; // or 0 if you don't want this bucket
+    const installation = installationYes === 'Yes' ? nnum(rates?.installation) : 0;
+    const transport    = nnum(transportValue);
+
+    const next = {
+    carcus, shutter, exposed, shelves, tandem,
+    installation, transport,
+    hw: hwTotal, accessories: accTotal
+  };   
+   setModuleCost(next);
+   setTotalCost(Object.values(next).reduce((s,v)=> s + nnum(v), 0));
+ }, [
+  carcusCost,
+  shelvesCost,
+  tandemCost,
+  shutterCost,
+  installationCost,
+  transportCost,
+  hwTotal,
+  accTotal
+]);
 
   const value = {
     selectedProduct,
@@ -133,6 +201,7 @@ Branch: MG Road, Bengaluru`,
     hardwareCatalog, accessoryCatalog,
     hardwareLines, setHardwareLines,
     accessoryLines, setAccessoryLines,
+    pricing,
 
     // Totals
     totalCost, setTotalCost,

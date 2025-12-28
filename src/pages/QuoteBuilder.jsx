@@ -5,11 +5,10 @@ import { INR } from '../utils/format'
 import TwoDimensionalInput from '../components/twoDimensionalInput/TwoDimensionalnput'
 import SectionDivider from '../components/divider/sectionDivider/SectionDivider'
 
-import RadioYesNo from '../components/radio/Index'
+import RadioYesNo from '../components/radio/Index';
 
 export default function QuoteBuilder(){
   const q = useQuote()
-  console.log(q)
 
   // Boards dependent options
   const boardTypes = q.boardSelection.category ? Object.keys(q.boardsCatalog.map[q.boardSelection.category] || {}) : []
@@ -21,40 +20,55 @@ export default function QuoteBuilder(){
 
   }
 
-  const evaluateHardwareAccessoryCost = () => {
-
-  }
-
   const evaluateInstallationCost = () => {
 
   }
 
-  const evaluateModularCost = () => {
+  const evaluateUnitsCost = () => {
     
   }
 
   return (
     <div className="row">
       <div className="stack-16">
-      {/* Client & Quote */}
-      <div className="card"><div className="body">
-        <h3>Client Details</h3>
-        <div className="grid g2" style={{marginTop:8}}>
-          <Field label="Client Name" value={q.client.name} onChange={v=>q.setClient({...q.client, name:v})}/>
-          <Field label="Quote No" value={q.quoteMeta.quoteNo} onChange={v=>q.setQuoteMeta({...q.quoteMeta, quoteNo:v})}/>
-          <Field label="Date (YYYY-MM-DD)" value={q.quoteMeta.date} onChange={v=>q.setQuoteMeta({...q.quoteMeta, date:v})}/>
-          <Select
-            label="Product"
-            value={q.selectedProduct}
-            onChange={v=>q.setSelectedProduct(v)}
-            options={q.productCatlog}
-          />
-          <Field label="Site Address" value={q.client.address} onChange={v=>q.setClient({...q.client, address:v})} full />
+        {/* Client & Quote */}
+        <div className="card">
+          <div className="body">
+            <h3>Client Details</h3>
+            <div className="grid g2" style={{ marginTop: 8 }}>
+              <Field
+                label="Client Name"
+                value={q.client.name}
+                onChange={(v) => q.setClient({ ...q.client, name: v })}
+              />
+              <Field
+                label="Quote No"
+                value={q.quoteMeta.quoteNo}
+                onChange={(v) => q.setQuoteMeta({ ...q.quoteMeta, quoteNo: v })}
+              />
+              <Field
+                label="Date (YYYY-MM-DD)"
+                value={q.quoteMeta.date}
+                onChange={(v) => q.setQuoteMeta({ ...q.quoteMeta, date: v })}
+              />
+              <Select
+                label="Product"
+                value={q.selectedProduct}
+                onChange={(v) => q.setSelectedProduct(v)}
+                options={q.productCatlog}
+              />
+              <Field
+                label="Site Address"
+                value={q.client.address}
+                onChange={(v) => q.setClient({ ...q.client, address: v })}
+                full
+              />
+            </div>
+          </div>
         </div>
-      </div></div>
 
-      {/* Kitchen Basics */}
-      {/* <div className="card"><div className="body">
+        {/* Kitchen Basics */}
+        {/* <div className="card"><div className="body">
         <h3>Kitchen</h3>
         <div className="grid g3" style={{marginTop:8}}>
           <Field label="Name" value={q.kitchen.name} onChange={v=>q.setKitchen({...q.kitchen, name:v})}/>
@@ -148,53 +162,113 @@ export default function QuoteBuilder(){
         </div>
       </div></div> */}
 
-      {/* kitchen basic info */}
-      <div className="card"><div className="body">
-      <h3>Material Selection</h3>
-      <div className="grid g3" style={{marginTop:8}}>
-          <Select
-            label="Core Material"
-            value={q.kitchen.core || "--select--"}
-            onChange={v=>q.setKitchen({...q.kitchen, core:v})}
-            options={q.coreMaterialCatalog}
-          />
-          {/* <Field label="Core Material" value={q.kitchen.core} onChange={v=>q.setKitchen({...q.kitchen, core:v})}/> */}
+        {/* kitchen basic info */}
+        <div className="card">
+          <div className="body">
+            <h3>Material Selection</h3>
+            <div className="grid g3" style={{ marginTop: 8 }}>
+              <Select
+                label="Core Material"
+                value={q.kitchen.core || "--select--"}
+                onChange={(v) => q.setKitchen({ ...q.kitchen, core: v })}
+                options={q.coreMaterialCatalog}
+              />
+              {/* <Field label="Core Material" value={q.kitchen.core} onChange={v=>q.setKitchen({...q.kitchen, core:v})}/> */}
 
-          <Select
-            label="Inner Liner"
-            value={q.kitchen.innerLiner || "--select--"}
-            onChange={v=>q.setKitchen({...q.kitchen, innerLiner:v})}
-            options={q.innerLinerCatalog}
-          />
-          {/* <Field label="Inner Liner" value={q.kitchen.innerLiner} onChange={v=>q.setKitchen({...q.kitchen, innerLiner:v})}/> */}
-          <Select
-            label="Shutter Finish"
-            value={q.kitchen.externalLaminate || "--select--"}
-            onChange={v=>q.setKitchen({...q.kitchen, externalLaminate:v})}
-            options={q.externalLaminateCatalog}
-          />
+              <Select
+                label="Inner Liner"
+                value={q.kitchen.innerLiner || "--select--"}
+                onChange={(v) => q.setKitchen({ ...q.kitchen, innerLiner: v })}
+                options={q.innerLinerCatalog}
+              />
+              {/* <Field label="Inner Liner" value={q.kitchen.innerLiner} onChange={v=>q.setKitchen({...q.kitchen, innerLiner:v})}/> */}
+              <Select
+                label="Shutter Finish"
+                value={q.kitchen.externalLaminate || "--select--"}
+                onChange={(v) =>
+                  q.setKitchen({ ...q.kitchen, externalLaminate: v })
+                }
+                options={q.externalLaminateCatalog}
+              />
+            </div>
+          </div>
         </div>
-      </div></div>
 
-      {/* Dimensions */}
-      <div className="card"><div className="body">
-      <h3>Dimensions</h3>
-      <div className="grid g2" style={{marginTop:8}}>
-          <NumberField label="Total Kitchen Face Area (sq ft)" value={q.areas.face} onChange={v=>{console.log(v);q.setAreas({...q.areas, face:v})}}/>
-          <NumberField label="Exposed/Visible Area (sq ft)" value={q.areas.visible} onChange={v=>{console.log(v);q.setAreas({...q.areas, visible:v})}}/>
-          <NumberField label="Tall Unit Area (sq ft)" value={q.areas.tall} onChange={v=>{console.log(v);q.setAreas({...q.areas, tall:v})}}/>
-          <NumberField label="Base Unit Area (sq ft)" value={q.areas.base} onChange={v=>{console.log(v);q.setAreas({...q.areas, base:v})}}/>
-          <NumberField label="Wall Unit Area (sq ft)" value={q.areas.wall} onChange={v=>{console.log(v);q.setAreas({...q.areas, wall:v})}}/>
-          <NumberField label="Loft Area (sq ft)" value={q.areas.loft} onChange={v=>{console.log(v);q.setAreas({...q.areas, loft:v})}}/>
-          <NumberField label="Shelf Area (sq ft)" value={q.areas.shelf} onChange={v=>{console.log(v);q.setAreas({...q.areas, shelf:v})}}/>
-          <NumberField label="Tandem Bottoms Area (sq ft)" value={q.areas.tandem} onChange={v=>{console.log(v);q.setAreas({...q.areas, tandem:v})}}/>
+        {/* Dimensions */}
+        <div className="card">
+          <div className="body">
+            <h3>Dimensions</h3>
+            <div className="grid g2" style={{ marginTop: 8 }}>
+              <NumberField
+                label="Total Kitchen Face Area (sq ft)"
+                value={q.areas.face}
+                onChange={(v) => {
+                  console.log(v);
+                  q.setAreas({ ...q.areas, face: v });
+                }}
+              />
+              <NumberField
+                label="Exposed/Visible Area (sq ft)"
+                value={q.areas.visible}
+                onChange={(v) => {
+                  console.log(v);
+                  q.setAreas({ ...q.areas, visible: v });
+                }}
+              />
+              <NumberField
+                label="Tall Unit Area (sq ft)"
+                value={q.areas.tall}
+                onChange={(v) => {
+                  console.log(v);
+                  q.setAreas({ ...q.areas, tall: v });
+                }}
+              />
+              <NumberField
+                label="Base Unit Area (sq ft)"
+                value={q.areas.base}
+                onChange={(v) => {
+                  console.log(v);
+                  q.setAreas({ ...q.areas, base: v });
+                }}
+              />
+              <NumberField
+                label="Wall Unit Area (sq ft)"
+                value={q.areas.wall}
+                onChange={(v) => {
+                  console.log(v);
+                  q.setAreas({ ...q.areas, wall: v });
+                }}
+              />
+              <NumberField
+                label="Loft Area (sq ft)"
+                value={q.areas.loft}
+                onChange={(v) => {
+                  console.log(v);
+                  q.setAreas({ ...q.areas, loft: v });
+                }}
+              />
+              <NumberField
+                label="Shelf Area (sq ft)"
+                value={q.areas.shelf}
+                onChange={(v) => {
+                  console.log(v);
+                  q.setAreas({ ...q.areas, shelf: v });
+                }}
+              />
+              <NumberField
+                label="Tandem Bottoms Area (sq ft)"
+                value={q.areas.tandem}
+                onChange={(v) => {
+                  console.log(v);
+                  q.setAreas({ ...q.areas, tandem: v });
+                }}
+              />
+            </div>
+          </div>
         </div>
-      </div></div>
 
-      
-
-      {/* Laminates */}
-      {/* <div className="card"><div className="body">
+        {/* Laminates */}
+        {/* <div className="card"><div className="body">
         <h3>Laminates</h3>
         <div className="grid g3" style={{marginTop:8}}>
           <Select
@@ -214,8 +288,8 @@ export default function QuoteBuilder(){
         <div className="muted" style={{marginTop:6}}>Calculated as: rate × Kitchen Face Area.</div>
       </div></div> */}
 
-      {/* Boards */}
-      {/* <div className="card"><div className="body">
+        {/* Boards */}
+        {/* <div className="card"><div className="body">
         <h3>Boards</h3>
         <div className="grid g3" style={{marginTop:8}}>
           <Select
@@ -246,27 +320,49 @@ export default function QuoteBuilder(){
         <div className="muted" style={{marginTop:6}}>Calculated as: rate × Kitchen Face Area.</div>
       </div></div> */}
 
-      {/* Hardware & Accessories: Brand → Category → Item */}
-      <div className="card"><div className="body" style={{marginTop:8}}>
-        <h3>Hardware & Accessories</h3>
-        <SectionDivider text="Hardware" dashed />
-        <LinesEditor title="Hardware"   lines={q.hardwareLines}   setLines={q.setHardwareLines}   catalog={q.hardwareCatalog}/>
-        <SectionDivider text="Accessories" dashed />
-        <LinesEditor title="Accessories" lines={q.accessoryLines} setLines={q.setAccessoryLines} catalog={q.accessoryCatalog}/>
-      </div></div>
+        {/* Hardware & Accessories: Brand → Category → Item */}
+        <div className="card">
+          <div className="body" style={{ marginTop: 8 }}>
+            <h3>Hardware & Accessories</h3>
+            <SectionDivider text="Hardware" dashed />
+            <LinesEditor
+              title="Hardware"
+              lines={q.hardwareLines}
+              setLines={q.setHardwareLines}
+              catalog={q.hardwareCatalog}
+              q={q}
+            />
+            <SectionDivider text="Accessories" dashed />
+            <LinesEditor
+              title="Accessories"
+              lines={q.accessoryLines}
+              setLines={q.setAccessoryLines}
+              catalog={q.accessoryCatalog}
+              q={q}
+            />
+          </div>
+        </div>
 
-      {/* Options */}
-      <div className="card"><div className="body">
-        <h3>Options</h3>
-        <div className="grid g3" style={{marginTop:8}}>
-          <NumberField label="Transport & Loading(₹)" value={q.transportValue} onChange={v=>{console.log(v);q.setTransportValue(v)}}/>
-          <RadioYesNo
-            label="Installation"
-            name="installation"
-            value={q.installationYes}
-            onChange={q.setInstallationYes}
-          />
-          {/* <RadioYesNo
+        {/* Options */}
+        <div className="card">
+          <div className="body">
+            <h3>Options</h3>
+            <div className="grid g3" style={{ marginTop: 8 }}>
+              <NumberField
+                label="Transport & Loading(₹)"
+                value={q.transportValue}
+                onChange={(v) => {
+                  console.log(v);
+                  q.setTransportValue(v);
+                }}
+              />
+              <RadioYesNo
+                label="Installation"
+                name="installation"
+                value={q.installationYes}
+                onChange={q.setInstallationYes}
+              />
+              {/* <RadioYesNo
             label="Transport & Loading"
             name="transport"
             value={q.transportValue > 0 ? 'Yes' : 'No'}
@@ -275,7 +371,7 @@ export default function QuoteBuilder(){
               // if 'Yes', keep current value (0) and let the user type; field below enables
             }}
           /> */}
-          {/* <Select label="Installation" value={q.installationYes} onChange={v=>{
+              {/* <Select label="Installation" value={q.installationYes} onChange={v=>{
             q.setInstallationYes(v);
             if(v==="Yes") {
               q.setInstallationAmount(150*globalThis.Number(q.areas.face));
@@ -285,94 +381,177 @@ export default function QuoteBuilder(){
           }} options={['Yes','No']}/>
           <NumberField disabled={true} label="Installation Amount" value={q.installationAmount} onChange={q.setInstallationAmount}/>
           <NumberField label="Transport & Loading (flat)" value={q.transportValue} onChange={q.setTransportValue}/> */}
+            </div>
+          </div>
         </div>
-      </div></div>
 
-      
-
-      {/* Constant footer */}
-      <StaticFooter />
-    </div>
-    {/* RIGHT: sticky Price Summary */}
-    <aside className="aside-sticky">
-      {/* Summary */}
-      <div className="card"><div className="body">
-        <h3>Price Summary</h3>
-        <div className="grid" style={{marginTop:8}}>
-          <SummaryTile label="All Units + Shutters + Shelves + Tandem" value={INR(q.laminateTotal + q.boardsTotal)}/>
-          <SummaryTile label="Hardware + Accessories" value={INR(q.hardwareTotal + q.accessoriesTotal)}/>
-          <SummaryTile label="Installation + Transport & Loading/Unloading" value={INR(q.hardwareTotal + q.accessoriesTotal)}/>
-          <SummaryTile label="Grand Total" value={INR(q.grandTotal)}/>
+        {/* Constant footer */}
+        <StaticFooter />
+      </div>
+      {/* RIGHT: sticky Price Summary */}
+      <aside className="aside-sticky">
+        {/* Summary */}
+        <div className="card">
+          <div className="body">
+            <h3>Price Summary</h3>
+            <div className="grid" style={{ marginTop: 8 }}>
+              <SummaryTile
+                label="All Units + Shutters + Shelves + Tandem"
+                value={INR(
+                  (Number.isFinite(q.moduleCost.carcus)
+                    ? q.moduleCost.carcus
+                    : 0) + (Number.isFinite(q.moduleCost.shutter)
+                    ? q.moduleCost.shutter
+                    : 0) + (Number.isFinite(q.moduleCost.shelves)
+                    ? q.moduleCost.shelves
+                    : 0) + (Number.isFinite(q.moduleCost.tandem)
+                    ? q.moduleCost.tandem
+                    : 0) + (Number.isFinite(q.moduleCost.exposed)
+                    ? q.moduleCost.exposed
+                    : 0)
+                )}
+              />
+              <SummaryTile
+                label="Hardware + Accessories"
+                value={INR(
+                  (Number.isFinite(q.moduleCost.accessories)
+                    ? q.moduleCost.accessories
+                    : 0) +
+                    (Number.isFinite(q.moduleCost.hw) ? q.moduleCost.hw : 0)
+                )}
+              />
+              <SummaryTile
+                label="Installation + Transport & Loading/Unloading"
+                value={INR(
+                  Number.isFinite(q.moduleCost.instalation)
+                    ? q.moduleCost.instalation
+                    : 0 + Number.isFinite(q.moduleCost.transport)
+                    ? q.moduleCost.transport
+                    : 0
+                )}
+              />
+              <SummaryTile label="Grand Total" value={INR(q.totalCost)} />
+            </div>
+          </div>
         </div>
-      </div></div>
-    </aside>
+      </aside>
     </div>
-  )
+  );
 }
 
-function LinesEditor({ title, lines, setLines, catalog }){
-  const add = () => setLines([...lines, { id:Date.now(), brand:'', category:'', item:'', qty:0 }])
-  const remove = (id) => setLines(lines.filter(r => r.id !== id))
-  const change = (idx, field, value) => {
-    const copy = [...lines]
-    copy[idx] = { ...copy[idx], [field]: value }
-    if (field === 'brand'){ copy[idx].category = ''; copy[idx].item = '' }
-    if (field === 'category'){ copy[idx].item = '' }
-    setLines(copy)
-  }
+function LinesEditor({ title, lines, setLines, catalog, q }) {
+  const isAcc = title === 'Accessories';
+  const isHw  = title === 'Hardware';
 
-  const brandOptions = catalog?.brands || []
+  const toNum = (v) => (v === '' ? 0 : globalThis.Number(v) || 0);
+
+  const brandOptions = Object.keys(catalog || {});
+  const getItem = (brand, itemId) => (catalog?.[brand] || []).find(x => x.id === itemId);
+  const getPrice = (brand, itemId) => toNum(getItem(brand, itemId)?.mrp);
+  const lineAmount = (line) => toNum(line.qty) * getPrice(line.brand, line.item);
+
+  const applyDelta = (delta) => {
+    if (!delta) return;
+    if (isAcc) {
+      q.setModuleCost(m => ({ ...m, accessories: toNum(m.accessories) + delta }));
+    }
+    if (isHw)  {
+      q.setModuleCost(m => ({ ...m, hw:          toNum(m.hw)          + delta }));
+    }
+    q.setTotalCost(t => toNum(t) + delta);
+  };
+
+  const add = () => setLines([...lines, { id: Date.now(), brand: '', item: '', qty: '' }]);
+
+  const remove = (id) => {
+    const line = lines.find(r => r.id === id);
+    const amt  = line ? lineAmount(line) : 0;
+    applyDelta(-amt);
+    setLines(lines.filter(r => r.id !== id));
+  };
+
+  const change = (idx, field, value) => {
+    const prevLine = lines[idx];
+    const prevAmt  = lineAmount(prevLine);
+
+    // Build updated line
+    const nextLine = { ...prevLine, [field]: value };
+
+    // Reset cascading fields
+    if (field === 'brand') nextLine.item = '';
+    if (field === 'qty')   nextLine.qty  = (value === '' ? '' : toNum(value));
+
+    const nextLines = [...lines];
+    nextLines[idx] = nextLine;
+
+    const nextAmt = lineAmount(nextLine);
+    applyDelta(nextAmt - prevAmt);
+    setLines(nextLines);
+  };
 
   return (
-    <div style={{marginTop:8}}>
-      {/* <div style={{display:'flex',alignItems:'center',gap:8, margin:'8px 0'}}>
-        <span className="pill">{title}</span>
-      </div> */}
-
-      {lines.map((r,idx) => {
-        const categories = r.brand ? Object.keys((catalog?.map?.[r.brand]) || {}) : []
-        const items = (r.brand && r.category)
-          ? ((catalog?.map?.[r.brand]?.[r.category]) || []).map(o => o.name)
-          : []
-
+    <div style={{ marginTop: 8 }}>
+      {lines.map((r, idx) => {
+        const items = r.brand ? (catalog?.[r.brand] || []) : [];
         return (
-          <div key={r.id} className="grid g4" style={{marginTop:20, alignItems:'end'}}>
+          <div key={r.id} className="grid g4" style={{ marginTop: 20, alignItems: 'end' }}>
+            {/* Brand */}
             <div>
               <label>Brand</label>
-              <select value={r.brand} onChange={e=>change(idx,'brand', e.target.value)}>
+              <select value={r.brand} onChange={(e) => change(idx, 'brand', e.target.value)}>
                 <option value="">-- select brand --</option>
                 {brandOptions.map(b => <option key={b} value={b}>{b}</option>)}
               </select>
             </div>
-            {/* <div>
-              <label>Category</label>
-              <select value={r.category} disabled={!r.brand} onChange={e=>change(idx,'category', e.target.value)}>
-                <option value="">{r.brand ? '-- select category --' : 'select brand first'}</option>
-                {categories.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
-            </div> */}
+
+            {/* Item (value is item.id) */}
             <div>
               <label>Item</label>
-              <select value={r.item} disabled={!r.category} onChange={e=>change(idx,'item', e.target.value)}>
-                <option value="">{r.category ? '-- select item --' : 'select category first'}</option>
-                {items.map(n => <option key={n} value={n}>{n}</option>)}
+              <select
+                value={r.item}
+                disabled={!r.brand}
+                onChange={(e) => change(idx, 'item', e.target.value)}
+              >
+                <option value="">{r.brand ? '-- select item --' : 'select brand first'}</option>
+                {items.map(n => (
+                  <option key={n.id} value={n.id}>{n.item_name}</option>
+                ))}
               </select>
             </div>
+
+            {/* Qty (blank-friendly) */}
             <div>
               <label>Qty</label>
-              <input type="number" value={r.qty} onChange={e=>change(idx,'qty', Number(e.target.value))}/>
+              <input
+                type="number"
+                inputMode="decimal"
+                step="any"
+                value={r.qty ?? ''}
+                onChange={(e) => {
+                  const s = e.target.value;
+                  change(idx, 'qty', s === '' ? '' : s);
+                }}
+              />
             </div>
-            <div style={{display:'flex',alignItems:'center'}}>
-              <button className="btn" onClick={()=>remove(r.id)}>Remove</button>
+
+            {/* Remove */}
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <button className="btn" onClick={() => remove(r.id)}>Remove</button>
+            </div>
+
+            {/* Optional: show computed line total */}
+            <div style={{ gridColumn: '1 / -1', textAlign: 'right' }} className="muted">
+              Line total: ₹{lineAmount(r).toLocaleString('en-IN')}
             </div>
           </div>
-        )
+        );
       })}
-      <div style={{display:'flex',alignItems:'center',gap:8, margin:'8px 0'}}>
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '8px 0' }}>
         <button className="btn blue" onClick={add}>Add</button>
       </div>
     </div>
-  )
+  );
 }
 
 function Field({ label, value, onChange, full }){
