@@ -3,7 +3,7 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from '
 import { INR, nnum } from '../utils/format'
 import { loadAllFromGoogle } from '../hooks/useInventory';
 import { innerLinerCatalog, externalLaminateCatalog, coreMaterialCatalog } from '../config/inventory/inventoryConstants';
-import { hardwareInventoryCatalog, accessoryInventoryCatalog, pricing } from './pricingSheet';
+import { hardwareInventoryCatalog, accessoryInventoryCatalog, pricing, installationRate } from './pricingSheet';
 
 const QuoteContext = createContext(null)
 export const useQuote = () => useContext(QuoteContext)
@@ -34,17 +34,13 @@ const nestedPrice = (catalog, brand, category, item) => {
 export function QuoteProvider({ children }){
   // Company (constant footer)
   const [company] = useState({
-    name: 'Tarush Furnitures',
-    email: 'hello@tarushkitchens.com',
-    website: 'tarushkitchens.com',
-    instagram: 'instagram.com/tarushkitchens',
-    address: 'Bengaluru, Karnataka, India',
+    name: 'Kawar Enterprise',
+    email: 'hello@tarushfurniture.com',
+    website: 'tarushfurniture.com',
+    instagram: 'instagram.com/tarushfurniture',
+    address: 'Kumhrar Patna',
     gst: '',
-    bankDetails: `Bank: HDFC Bank
-A/C Name: Tarush Furnitures
-A/C No: 1234567890
-IFSC: HDFC0000001
-Branch: MG Road, Bengaluru`,
+    bankDetails: ``,
     logoDataUrl: ''
   })
 
@@ -128,6 +124,14 @@ const core_tall   = React.useMemo(() => areas.tall   * n(coreRates.tall),   [are
 const core_wall   = React.useMemo(() => areas.wall   * n(coreRates.wall),   [areas.wall,   coreRates.wall])
 const core_shelf  = React.useMemo(() => areas.shelf  * n(coreRates.shelf),  [areas.shelf,  coreRates.shelf])
 const core_tandem = React.useMemo(() => areas.tandem * n(coreRates.tandem), [areas.tandem, coreRates.tandem])
+const installationCost = React.useMemo(()=> {
+  let installationTotal = 0;
+  if(installationYes=="Yes" && Number.isFinite(Number(areas.face))) {
+    installationTotal = areas.face * n(installationRate)
+  }
+  return installationTotal
+}
+, [areas.face, installationYes])
 
 const carcusCost  = core_base + core_tall + core_wall
 const shelvesCost = core_shelf
@@ -141,7 +145,7 @@ const shutterCost = React.useMemo(() => areas.visible * n(shutterPerSqft), [area
   const hwTotal  = nnum(moduleCost.hw);
   const accTotal = nnum(moduleCost.accessories);
 
-  const installationCost = (installationYes === 'Yes' && Number.isFinite(areas.face)) ? n(pricing?.installation*areas.face) : 0
+  // const installationCost = (installationYes === 'Yes' && Number.isFinite(areas.face)) ? n(pricing?.installation*areas.face) : 0
 const transportCost    = n(transportValue)
 
   // keep moduleCost/totalCost in sync whenever inputs change
@@ -151,12 +155,11 @@ const transportCost    = n(transportValue)
     const tandem  = core_tandem;
     const shutter = shutterCost;
     const exposed = shutterCost; // or 0 if you don't want this bucket
-    const installation = installationYes === 'Yes' ? nnum(rates?.installation) : 0;
     const transport    = nnum(transportValue);
 
     const next = {
     carcus, shutter, exposed, shelves, tandem,
-    installation, transport,
+    installation:installationCost, transport,
     hw: hwTotal, accessories: accTotal
   };   
    setModuleCost(next);

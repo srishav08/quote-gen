@@ -423,11 +423,11 @@ export default function QuoteBuilder(){
               <SummaryTile
                 label="Installation + Transport & Loading/Unloading"
                 value={INR(
-                  Number.isFinite(q.moduleCost.instalation)
-                    ? q.moduleCost.instalation
-                    : 0 + Number.isFinite(q.moduleCost.transport)
+                  (Number.isFinite(q.moduleCost.installation)
+                    ? q.moduleCost.installation
+                    : 0) +( Number.isFinite(q.moduleCost.transport)
                     ? q.moduleCost.transport
-                    : 0
+                    : 0)
                 )}
               />
               <SummaryTile label="Grand Total" value={INR(q.totalCost)} />

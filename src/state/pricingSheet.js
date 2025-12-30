@@ -346,6 +346,6 @@ const accessoryInventoryCatalog = {
 
 ]
 };
-const installation = 25;
+const installationRate = 118;
 
-export  { pricing , hardwareInventoryCatalog , accessoryInventoryCatalog, installation }
+export  { pricing , hardwareInventoryCatalog , accessoryInventoryCatalog, installationRate }
